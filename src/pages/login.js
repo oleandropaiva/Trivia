@@ -1,17 +1,30 @@
 import React from 'react';
+import propTypes from 'prop-types';
+import getApiToke from '../services/api';
 import { Link } from 'react-router-dom';
 
 class Login extends React.Component {
-  state = {
-    user: '',
-    email: '',
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: '',
+      email: '',
+    };
   }
 
   handleChange = ({ target }) => {
-    console.log(target.value);
     this.setState({
       [target.name]: target.value,
     });
+  }
+
+  handleSubmit = async (e) => {
+    e.preventDefault();
+    const sessionToken = await getApiToke();
+    localStorage.setItem('token', sessionToken.token);
+
+    const { history } = this.props;
+    history.push('/game');
   }
 
   render() {
@@ -37,6 +50,7 @@ class Login extends React.Component {
             disabled={ email.length === 0 || user.length === 0 }
             type="submit"
             data-testid="btn-play"
+            onClick={ this.handleSubmit }
           >
             Play
           </button>
@@ -55,4 +69,9 @@ class Login extends React.Component {
     );
   }
 }
+
+Login.propTypes = {
+  history: propTypes.string,
+}.isRequired;
+
 export default Login;
