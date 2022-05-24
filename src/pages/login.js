@@ -1,6 +1,7 @@
 import React from 'react';
 import propTypes from 'prop-types';
 import getApiToke from '../services/api';
+import { Link } from 'react-router-dom';
 
 class Login extends React.Component {
   constructor(props) {
@@ -53,6 +54,16 @@ class Login extends React.Component {
           >
             Play
           </button>
+          <Link
+            to="/settings"
+          >
+            <button
+              type="button"
+              data-testid="btn-settings"
+            >
+              Settings
+            </button>
+          </Link>
         </form>
       </div>
     );
