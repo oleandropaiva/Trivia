@@ -13,7 +13,3 @@ if (window.Cypress) {
   window.store = store;
 }
 export default store;
-
-/* if (window.Cypress) {
-  window.store = store;
-} */
