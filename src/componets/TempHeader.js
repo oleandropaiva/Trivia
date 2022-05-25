@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import logo from '../trivia.png';
 
-class Header extends Component {
+class TempHeader extends Component {
   render() {
     return (
       <header className="App-header">
@@ -12,4 +12,4 @@ class Header extends Component {
   }
 }
 
-export default Header;
+export default TempHeader;

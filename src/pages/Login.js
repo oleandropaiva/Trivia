@@ -1,7 +1,9 @@
 import React from 'react';
 import propTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import getApiToken from '../services/api';
+import { sendEmailForm, sendUserForm } from '../redux/actions/index';
 
 class Login extends React.Component {
   constructor(props) {
@@ -23,7 +25,10 @@ class Login extends React.Component {
     const sessionToken = await getApiToken();
     localStorage.setItem('token', sessionToken.token);
 
-    const { history } = this.props;
+    const { history, sendEmailFormProp, sendUserFormProp } = this.props;
+    const { email, user } = this.state;
+    sendEmailFormProp(email);
+    sendUserFormProp(user);
     history.push('/game');
   }
 
@@ -35,6 +40,7 @@ class Login extends React.Component {
           <input
             type="email"
             name="email"
+            placeholder="Insira seu email"
             value={ email }
             onChange={ this.handleChange }
             data-testid="input-gravatar-email"
@@ -42,6 +48,7 @@ class Login extends React.Component {
           <input
             type="text"
             name="user"
+            placeholder="Insira seu nome"
             value={ user }
             onChange={ this.handleChange }
             data-testid="input-player-name"
@@ -70,8 +77,13 @@ class Login extends React.Component {
   }
 }
 
+const mapDispatchToProps = (dispatch) => ({
+  sendEmailFormProp: (emailForm) => dispatch(sendEmailForm(emailForm)),
+  sendUserFormProp: (userForm) => dispatch(sendUserForm(userForm)),
+});
+
 Login.propTypes = {
   history: propTypes.string,
 }.isRequired;
 
-export default Login;
+export default connect(null, mapDispatchToProps)(Login);
