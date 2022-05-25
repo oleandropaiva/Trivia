@@ -1,18 +1,28 @@
-/* import USER_ACCESS from '../actions';
+import { USER_EMAIL, USER_NAME, USER_SCORE } from '../actions/newFile';
 
 const INITIAL_STATE = {
   name: '',
   assertions: '',
-  score: '',
+  score: 0,
   gravatarEmail: '',
 };
 
 function userReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
-  case USER_ACCESS:
+  case USER_EMAIL:
     return {
       ...state,
-      // email: action.payload,
+      gravatarEmail: action.payload,
+    };
+  case USER_NAME:
+    return {
+      ...state,
+      name: action.payload,
+    };
+  case USER_SCORE:
+    return {
+      ...state,
+      score: action.payload,
     };
   default:
     return state;
@@ -20,4 +30,3 @@ function userReducer(state = INITIAL_STATE, action) {
 }
 
 export default userReducer;
- */
