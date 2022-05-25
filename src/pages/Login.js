@@ -2,8 +2,7 @@ import React from 'react';
 import propTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import getApiToken from '../services/api';
-import { sendEmailForm, sendUserForm } from '../redux/actions/index';
+import { sendEmailForm, sendUserForm, getApiToken } from '../redux/actions/index';
 
 class Login extends React.Component {
   constructor(props) {
