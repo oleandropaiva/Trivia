@@ -1,7 +1,7 @@
 import React from 'react';
 import propTypes from 'prop-types';
-import getApiToke from '../services/api';
 import { Link } from 'react-router-dom';
+import getApiToken from '../services/api';
 
 class Login extends React.Component {
   constructor(props) {
@@ -20,7 +20,7 @@ class Login extends React.Component {
 
   handleSubmit = async (e) => {
     e.preventDefault();
-    const sessionToken = await getApiToke();
+    const sessionToken = await getApiToken();
     localStorage.setItem('token', sessionToken.token);
 
     const { history } = this.props;
