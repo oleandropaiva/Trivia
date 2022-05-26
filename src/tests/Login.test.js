@@ -1,8 +1,8 @@
 import React from 'react';
-import { screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event'
-import renderWithRouterAndRedux from '../helpers/renderWithRouterAndRedux'
-import App from '../../App';
+import renderWithRouterAndRedux from './helpers/renderWithRouterAndRedux'
+import App from '../App';
 
 describe('Testes para atingir 90% de cobertura da tela de Login', () => {
 
@@ -87,7 +87,7 @@ describe('Testes para atingir 90% de cobertura da tela de Login', () => {
     
     userEvent.click(playButton);
 
-    await screen.findByText("Game");
+    await screen.findByText("TESTE");
 
     expect(history.location.pathname).toBe('/game')
   });
