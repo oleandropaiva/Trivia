@@ -27,7 +27,7 @@ class Game extends Component {
     return (
       <div>
         <Header />
-        <Trivia />
+        <Trivia history={ history } />
       </div>
     );
   }
