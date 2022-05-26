@@ -3,6 +3,7 @@ import propTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { sendEmailForm, sendUserForm, getApiToken } from '../redux/actions/index';
+import { addTokenLocalStorage, resetLocalStorage } from '../services/localStorage';
 
 class Login extends React.Component {
   constructor(props) {
@@ -21,8 +22,16 @@ class Login extends React.Component {
 
   handleSubmit = async (e) => {
     e.preventDefault();
-    const sessionToken = await getApiToken();
-    localStorage.setItem('token', sessionToken.token);
+    const sessionToken = await getApiToken(); //
+    if (sessionToken.response_code === 0) {
+      addTokenLocalStorage(sessionToken.token);
+    } else {
+      resetLocalStorage();
+      const { history } = this.props;
+      history.push('/login');
+    }
+    // localStorage.setItem('token', sessionToken.token);
+    // addTokenLocalStorage(sessionToken.token); //
 
     const { history, sendEmailFormProp, sendUserFormProp } = this.props;
     const { email, user } = this.state;
@@ -76,13 +85,13 @@ class Login extends React.Component {
   }
 }
 
+Login.propTypes = {
+  history: propTypes.string,
+}.isRequired;
+
 const mapDispatchToProps = (dispatch) => ({
   sendEmailFormProp: (emailForm) => dispatch(sendEmailForm(emailForm)),
   sendUserFormProp: (userForm) => dispatch(sendUserForm(userForm)),
 });
-
-Login.propTypes = {
-  history: propTypes.string,
-}.isRequired;
 
 export default connect(null, mapDispatchToProps)(Login);

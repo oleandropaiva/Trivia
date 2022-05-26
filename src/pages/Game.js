@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import propTypes from 'prop-types';
 import Header from '../components/Header';
 import Trivia from '../components/Trivia';
 import { fetchQuestion } from '../redux/actions';
+import { getTokenLocalStorage } from '../services/localStorage';
 
 class Game extends Component {
   componentDidMount() {
     const { fetchQuestionsProp } = this.props;
-    fetchQuestionsProp(
-      '7f393ae83a217f83c164fbd62ec3fdfb19a7d860bfb20137dd14f1a32c8e4655',
-    );
+
+    const getToken = getTokenLocalStorage();
+    fetchQuestionsProp(getToken);
   }
 
   render() {
@@ -21,6 +23,10 @@ class Game extends Component {
     );
   }
 }
+
+Game.propTypes = {
+  fetchQuestionsProp: propTypes.func,
+}.isRequired;
 
 const mapDispatchToProps = (dispatch) => ({
   fetchQuestionsProp: (token) => dispatch(fetchQuestion(token)),
