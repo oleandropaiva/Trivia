@@ -6,6 +6,9 @@ class Trivia extends React.Component {
     const { resultsQuestions } = this.props;
     const { results } = resultsQuestions;
 
+    // const questions = [results[0].correct_answer, results[0].incorrect_answers];
+    // console.log('questions', questions);
+
     return (
       <div>
         {typeof results === 'undefined'
