@@ -16,10 +16,10 @@ class Game extends Component {
 
   render() {
     const { resultsQuestions, history } = this.props;
-    const { response_code } = resultsQuestions;
+    const { responseCode } = resultsQuestions; // Verificar pq ao mudar para camel case o teste falha req6 (anteriormente era response_code)
 
     const RESPONSE_CODE_NUMBER = 3;
-    if (response_code === RESPONSE_CODE_NUMBER) {
+    if (responseCode === RESPONSE_CODE_NUMBER) { // Verificar pq ao mudar para camel case o teste falha req6 (anteriormente era response_code)
       resetLocalStorage();
       history.push('/');
     }

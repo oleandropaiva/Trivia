@@ -15,7 +15,7 @@ export const renderWithRouterAndRedux = (component, initialState, route = '/') =
     ...render(
       <Provider store={ store }>
         <Router history={ history }>
-          {component}
+          { component }
         </Router>
       </Provider>,
     ),
