@@ -55,6 +55,26 @@ class Trivia extends React.Component {
       console.log('alternatives', alternatives);
       return nextQuestionRandom;
     }
+    
+    const alternatives = results[currentQuestion + 1].incorrect_answers.map((text) => ({
+      text,
+      isCorrect: false,
+    }));
+    alternatives.push({
+      text: results[currentQuestion + 1].correct_answer,
+      isCorrect: true,
+    });
+    console.log(alternatives);
+
+    const RANDOM_CONST = 0.5;
+    const nextQuestion = alternatives.sort(() => Math.random() - RANDOM_CONST);
+
+    this.setState({
+      nextQuestion,
+    });
+
+    console.log('results', results);
+    return nextQuestion;
   }
 
   nextQuestion = () => {
@@ -81,6 +101,7 @@ class Trivia extends React.Component {
       styleBtnCorrect,
       styleBtnIncorrect,
     } = this.state;
+    const { currentQuestion, showNextBtn, nextQuestion } = this.state;
     const { resultsQuestions } = this.props;
     const { results = [] } = resultsQuestions;
     console.log('nextQuestion', nextQuestion);
@@ -101,6 +122,9 @@ class Trivia extends React.Component {
                 <div data-testid="answer-options">
                   <button
                     className={ styleBtnCorrect }
+                <h2 data-testid="question-text">{ results[0].question }</h2>
+                <div data-testid="answer-options">
+                  <button
                     type="button"
                     data-testid="correct-answer"
                     name="correct-answer"
