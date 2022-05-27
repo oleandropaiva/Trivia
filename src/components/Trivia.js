@@ -5,6 +5,7 @@ class Trivia extends React.Component {
   state = {
     currentQuestion: 0,
     showNextBtn: false,
+    alterBtnsAnswers: 0,
   }
 
   verifyAnswer = (alternative) => {
@@ -18,7 +19,7 @@ class Trivia extends React.Component {
     const { resultsQuestions } = this.props;
     const { results } = resultsQuestions;
 
-    const answers = [results[0].correct_answer, ...results[0].incorrect_answers];
+    // const answers = [results[0].correct_answer, ...results[0].incorrect_answers];
 
     const alternatives = results[0].incorrect_answers.map((text) => ({ text, isCorrect: false }));
     alternatives.push({
@@ -27,11 +28,11 @@ class Trivia extends React.Component {
     });
     console.log(alternatives);
 
-    const RANDOM_CONST = 0.5;
-    const randomAnsArray = answers.sort(() => Math.random() - RANDOM_CONST);
+    // const RANDOM_CONST = 0.5;
+    // const randomAnsArray = answers.sort(() => Math.random() - RANDOM_CONST);
 
     // console.log('answers', answers);
-    return randomAnsArray;
+    return alternatives;
   }
 
   nextQuestion = () => {
@@ -41,7 +42,10 @@ class Trivia extends React.Component {
 
     this.setState({ showNextBtn: false });
     if (currentQuestion < results.length - 1) {
-      this.setState({ currentQuestion: currentQuestion + 1 });
+      this.setState({
+        currentQuestion: currentQuestion + 1,
+        alterBtnsAnswers: 1,
+      });
     } else {
       history.push('/'); // REDIRECIONAR PARA RANKING
     }
@@ -51,7 +55,7 @@ class Trivia extends React.Component {
   }
 
   render() {
-    const { currentQuestion, showNextBtn } = this.state;
+    const { currentQuestion, showNextBtn, alterBtnsAnswers } = this.state;
     const { resultsQuestions } = this.props;
     const { results = [] } = resultsQuestions;
 
@@ -66,6 +70,13 @@ class Trivia extends React.Component {
                   {results[currentQuestion].category}
                 </h1>
                 <h2 data-testid="question-text">{ results[0].question }</h2>
+
+                {/* {alterBtnsAnswers === 0 ? (
+                  <p>Sim</p>
+                ) : (
+                  <p>Não</p>
+                )} */}
+
                 <button
                   type="button"
                   data-testid="correct-answer"
@@ -88,6 +99,7 @@ class Trivia extends React.Component {
                     >
                       { incorretAnsewr }
                     </button>))}
+
                 {showNextBtn && (
                   <button
                     data-testid="btn-next"
