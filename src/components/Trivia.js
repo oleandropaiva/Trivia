@@ -32,9 +32,7 @@ class Trivia extends React.Component {
     const { resultsQuestions } = this.props;
     const { currentQuestion } = this.state;
     const { results } = resultsQuestions;
-
     // const answers = [results[0].correct_answer, ...results[0].incorrect_answers];
-
     if (currentQuestion < results.length - 1) {
       const alternatives = results[currentQuestion + 1].incorrect_answers.map((text) => ({
         text,
@@ -46,42 +44,19 @@ class Trivia extends React.Component {
       });
       const RANDOM_CONST = 0.5;
       const nextQuestionRandom = alternatives.sort(() => Math.random() - RANDOM_CONST);
-
       this.setState({
         nextQuestion: nextQuestionRandom,
       });
-
       console.log('results', results);
       console.log('alternatives', alternatives);
       return nextQuestionRandom;
     }
-    
-    const alternatives = results[currentQuestion + 1].incorrect_answers.map((text) => ({
-      text,
-      isCorrect: false,
-    }));
-    alternatives.push({
-      text: results[currentQuestion + 1].correct_answer,
-      isCorrect: true,
-    });
-    console.log(alternatives);
-
-    const RANDOM_CONST = 0.5;
-    const nextQuestion = alternatives.sort(() => Math.random() - RANDOM_CONST);
-
-    this.setState({
-      nextQuestion,
-    });
-
-    console.log('results', results);
-    return nextQuestion;
   }
 
   nextQuestion = () => {
     const { resultsQuestions, history } = this.props;
     const { currentQuestion } = this.state;
     const { results } = resultsQuestions;
-
     this.setState({ showNextBtn: false });
     if (currentQuestion < results.length - 1) {
       this.setState({
@@ -92,6 +67,7 @@ class Trivia extends React.Component {
     }
     this.randomAnswers();
     // console.log('currentQuestion', currentQuestion);
+    //
   }
 
   render() {
@@ -101,14 +77,11 @@ class Trivia extends React.Component {
       styleBtnCorrect,
       styleBtnIncorrect,
     } = this.state;
-    const { currentQuestion, showNextBtn, nextQuestion } = this.state;
     const { resultsQuestions } = this.props;
     const { results = [] } = resultsQuestions;
     console.log('nextQuestion', nextQuestion);
-
     return (
       <div>
-
         {
           // eslint-disable-next-line no-nested-ternary
           results.length <= 0
@@ -122,9 +95,6 @@ class Trivia extends React.Component {
                 <div data-testid="answer-options">
                   <button
                     className={ styleBtnCorrect }
-                <h2 data-testid="question-text">{ results[0].question }</h2>
-                <div data-testid="answer-options">
-                  <button
                     type="button"
                     data-testid="correct-answer"
                     name="correct-answer"
@@ -134,7 +104,6 @@ class Trivia extends React.Component {
                       results[currentQuestion].correct_answer
                     }
                   </button>
-
                   {results[currentQuestion].incorrect_answers
                     .map((incorretAnsewr, index) => (
                       <button
@@ -154,9 +123,7 @@ class Trivia extends React.Component {
                 <h1 data-testid="question-category">
                   {results[currentQuestion].category}
                 </h1>
-
                 <h2 data-testid="question-text">{ results[currentQuestion].question }</h2>
-
                 {nextQuestion.map(({ text, isCorrect }, index) => (
                   <div key={ index } data-testid="answer-options">
                     <button
@@ -177,7 +144,6 @@ class Trivia extends React.Component {
             )
         }
         {/* END - // results.length // */}
-
         {showNextBtn && (
           <button
             data-testid="btn-next"
@@ -192,9 +158,7 @@ class Trivia extends React.Component {
     );
   }
 }
-
 const mapStateToProps = (state) => ({
   resultsQuestions: state.gameReducer.resultsQuestions,
 });
-
 export default connect(mapStateToProps)(Trivia);
