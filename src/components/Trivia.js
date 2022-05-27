@@ -5,6 +5,7 @@ class Trivia extends React.Component {
   state = {
     currentQuestion: 0,
     showNextBtn: false,
+    nextQuestion: [],
   }
 
   verifyAnswer = (alternative) => {
@@ -16,22 +17,30 @@ class Trivia extends React.Component {
 
   randomAnswers = () => {
     const { resultsQuestions } = this.props;
+    const { currentQuestion } = this.state;
     const { results } = resultsQuestions;
 
-    const answers = [results[0].correct_answer, ...results[0].incorrect_answers];
+    // const answers = [results[0].correct_answer, ...results[0].incorrect_answers];
 
-    const alternatives = results[0].incorrect_answers.map((text) => ({ text, isCorrect: false }));
+    const alternatives = results[currentQuestion + 1].incorrect_answers.map((text) => ({
+      text,
+      isCorrect: false,
+    }));
     alternatives.push({
-      text: results[0].correct_answer,
+      text: results[currentQuestion + 1].correct_answer,
       isCorrect: true,
     });
     console.log(alternatives);
 
     const RANDOM_CONST = 0.5;
-    const randomAnsArray = answers.sort(() => Math.random() - RANDOM_CONST);
+    const nextQuestion = alternatives.sort(() => Math.random() - RANDOM_CONST);
 
-    // console.log('answers', answers);
-    return randomAnsArray;
+    this.setState({
+      nextQuestion,
+    });
+
+    console.log('results', results);
+    return nextQuestion;
   }
 
   nextQuestion = () => {
@@ -51,56 +60,87 @@ class Trivia extends React.Component {
   }
 
   render() {
-    const { currentQuestion, showNextBtn } = this.state;
+    const { currentQuestion, showNextBtn, nextQuestion } = this.state;
     const { resultsQuestions } = this.props;
     const { results = [] } = resultsQuestions;
 
     return (
       <div>
+
         {
+          // eslint-disable-next-line no-nested-ternary
           results.length <= 0
             ? <p>Carregando...</p>
-            : (
+            : (currentQuestion === 0 ? (
               <div>
                 <h1 data-testid="question-category">
                   {results[currentQuestion].category}
                 </h1>
                 <h2 data-testid="question-text">{ results[0].question }</h2>
-                <button
-                  type="button"
-                  data-testid="correct-answer"
-                  name="correct-answer"
-                  onClick={ () => this.verifyAnswer('correct-answer') }
-                >
-                  {
-                    results[currentQuestion].correct_answer
-                  }
-                </button>
-
-                {results[currentQuestion].incorrect_answers
-                  .map((incorretAnsewr, index) => (
-                    <button
-                      key={ index }
-                      type="button"
-                      name={ `wrong-answer-${index}` }
-                      data-testid={ `wrong-answer-${index}` }
-                      onClick={ () => this.verifyAnswer(`wrong-answer-${index}`) }
-                    >
-                      { incorretAnsewr }
-                    </button>))}
-                {showNextBtn && (
+                <div data-testid="answer-options">
                   <button
-                    data-testid="btn-next"
                     type="button"
-                    // key={ index }
-                    onClick={ this.nextQuestion }
+                    data-testid="correct-answer"
+                    name="correct-answer"
+                    onClick={ () => this.verifyAnswer('correct-answer') }
                   >
-                    Next
+                    {
+                      results[currentQuestion].correct_answer
+                    }
                   </button>
-                )}
+
+                  {results[currentQuestion].incorrect_answers
+                    .map((incorretAnsewr, index) => (
+                      <button
+                        key={ index }
+                        type="button"
+                        name={ `wrong-answer-${index}` }
+                        data-testid={ `wrong-answer-${index}` }
+                        onClick={ () => this.verifyAnswer(`wrong-answer-${index}`) }
+                      >
+                        { incorretAnsewr }
+                      </button>))}
+                </div>
+              </div>
+            ) : (
+              <div>
+                <h1 data-testid="question-category">
+                  {results[currentQuestion].category}
+                </h1>
+
+                <h2 data-testid="question-text">{ results[currentQuestion].question }</h2>
+
+                {nextQuestion.map(({ text, isCorrect }, index) => (
+                  <div key={ index } data-testid="answer-options">
+                    <button
+                      type="button"
+                      data-testid={ isCorrect
+                        ? 'correct-answer'
+                        : `wrong-answer-${index}` }
+                      onClick={ isCorrect
+                        ? () => this.verifyAnswer('correct-answer')
+                        : () => this.verifyAnswer(`wrong-answer-${index}`) }
+                    >
+                      {text}
+                    </button>
+                  </div>
+                ))}
               </div>
             )
+            )
         }
+        {/* END - // results.length // */}
+
+        {showNextBtn && (
+          <button
+            data-testid="btn-next"
+            type="button"
+            // key={ index }
+            onClick={ this.nextQuestion }
+          >
+            Next
+          </button>
+        )}
       </div>
     );
   }
@@ -111,15 +151,3 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps)(Trivia);
-
-/* {randomAnsArray.map((answers, index) => (
-  <div key={ index }>
-    <button
-      data-testid={ `wrong-answer-${index}` }
-      type="button"
-      onClick={ this.handleAnswers }
-    >
-teste
-    </button>
-  </div>
-))} */
