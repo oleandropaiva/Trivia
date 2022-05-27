@@ -47,6 +47,7 @@ class Trivia extends React.Component {
     }
     this.randomAnswers();
     // console.log('currentQuestion', currentQuestion);
+    //
   }
 
   render() {
