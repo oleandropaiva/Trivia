@@ -61,3 +61,13 @@ body {
     transform: translate3d(4px, 0, 0);
   }
 }
+
+/* --------------------------------- */
+
+.btnCorrectOption {
+  border: 3px solid rgb(6, 240, 15);
+}
+
+.btnIncorrectOption {
+  border: 3px solid red;
+}
