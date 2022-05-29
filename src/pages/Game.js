@@ -8,11 +8,15 @@ import { getTokenLocalStorage, resetLocalStorage } from '../services/localStorag
 
 class Game extends Component {
   componentDidMount() {
-    const { fetchQuestionsProp } = this.props;
-
+    const { fetchQuestionsProp, resultsQuestions } = this.props;
     const getToken = getTokenLocalStorage();
     fetchQuestionsProp(getToken);
+    console.log('resultsQuestions', resultsQuestions);
   }
+
+  /* Retest = () => {
+    fetchQuestionsProp(getToken);
+  } */
 
   render() {
     const { resultsQuestions, history } = this.props;

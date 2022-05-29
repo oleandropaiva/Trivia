@@ -1,7 +1,8 @@
-import { QUESTION } from '../actions/newFile';
+import { QUESTION, CATEGORIES } from '../actions/newFile';
 
 const INITIAL_STATE = {
   resultsQuestions: [],
+  categories: [],
 };
 
 function gameReducer(state = INITIAL_STATE, action) {
@@ -11,7 +12,11 @@ function gameReducer(state = INITIAL_STATE, action) {
       ...state,
       resultsQuestions: action.payload,
     };
-
+  case CATEGORIES:
+    return {
+      ...state,
+      categories: action.payload,
+    };
   default:
     return state;
   }

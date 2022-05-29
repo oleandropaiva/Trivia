@@ -14,6 +14,11 @@ class Login extends React.Component {
     };
   }
 
+  componentDidMount() {
+    const { getApiTokenProp } = this.props;
+    getApiTokenProp(); // Primeira chamada => undefined
+  }
+
   handleChange = ({ target }) => {
     this.setState({
       [target.name]: target.value,
@@ -22,18 +27,16 @@ class Login extends React.Component {
 
   handleSubmit = async (e) => {
     e.preventDefault();
-    const sessionToken = await getApiToken(); //
+    const { getApiTokenProp, getTokenProp } = this.props;
+    await getApiTokenProp(); // Segunda chamada => retorna valor
 
-    addTokenLocalStorage(sessionToken.token);
+    addTokenLocalStorage(getTokenProp.token);
 
-    const { history, sendEmailFormProp, sendUserFormProp } = this.props;
+    const { sendEmailFormProp, sendUserFormProp, history } = this.props;
     const { email, user } = this.state;
     sendEmailFormProp(email);
     sendUserFormProp(user);
     history.push('/game');
-
-    // localStorage.setItem('token', sessionToken.token);
-    // addTokenLocalStorage(sessionToken.token); //
   }
 
   render() {
@@ -85,9 +88,14 @@ Login.propTypes = {
   history: propTypes.string,
 }.isRequired;
 
+const mapStateToProps = (state) => ({
+  getTokenProp: state.gameReducer.categories,
+});
+
 const mapDispatchToProps = (dispatch) => ({
   sendEmailFormProp: (emailForm) => dispatch(sendEmailForm(emailForm)),
   sendUserFormProp: (userForm) => dispatch(sendUserForm(userForm)),
+  getApiTokenProp: () => dispatch(getApiToken()),
 });
 
-export default connect(null, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

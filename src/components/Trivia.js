@@ -7,8 +7,33 @@ class Trivia extends React.Component {
     currentQuestion: 0,
     showNextBtn: false,
     nextQuestion: [],
+    firstQuestion: [],
     styleBtnCorrect: '',
     styleBtnIncorrect: '',
+    conditionDidUpdate: true,
+  }
+
+  componentDidUpdate() {
+    const { resultsQuestions } = this.props;
+    const { currentQuestion, conditionDidUpdate } = this.state;
+    const { results } = resultsQuestions;
+
+    if (currentQuestion < results.length - 1 && conditionDidUpdate === true) {
+      const alternatives = results[currentQuestion].incorrect_answers.map((text) => ({
+        text,
+        isCorrect: false,
+      }));
+      alternatives.push({
+        text: results[currentQuestion].correct_answer,
+        isCorrect: true,
+      });
+      const RANDOM_CONST = 0.5;
+      const nextQuestionRandom = alternatives.sort(() => Math.random() - RANDOM_CONST);
+      this.setState({
+        firstQuestion: nextQuestionRandom,
+        conditionDidUpdate: false,
+      });
+    }
   }
 
   verifyAnswer = (alternative) => {
@@ -47,8 +72,6 @@ class Trivia extends React.Component {
       this.setState({
         nextQuestion: nextQuestionRandom,
       });
-      console.log('results', results);
-      console.log('alternatives', alternatives);
       return nextQuestionRandom;
     }
   }
@@ -79,7 +102,8 @@ class Trivia extends React.Component {
     } = this.state;
     const { resultsQuestions } = this.props;
     const { results = [] } = resultsQuestions;
-    console.log('nextQuestion', nextQuestion);
+    const { firstQuestion } = this.state;
+
     return (
       <div>
         {
@@ -92,30 +116,26 @@ class Trivia extends React.Component {
                   {results[currentQuestion].category}
                 </h1>
                 <h2 data-testid="question-text">{ results[currentQuestion].question }</h2>
+
                 <div data-testid="answer-options">
-                  <button
-                    className={ styleBtnCorrect }
-                    type="button"
-                    data-testid="correct-answer"
-                    name="correct-answer"
-                    onClick={ () => this.verifyAnswer('correct-answer') }
-                  >
-                    {
-                      results[currentQuestion].correct_answer
-                    }
-                  </button>
-                  {results[currentQuestion].incorrect_answers
-                    .map((incorretAnsewr, index) => (
+                  {firstQuestion.map(({ text, isCorrect }, index) => (
+                    <div key={ index } data-testid="answer-options">
                       <button
-                        className={ styleBtnIncorrect }
-                        key={ index }
                         type="button"
-                        name={ `wrong-answer-${index}` }
-                        data-testid={ `wrong-answer-${index}` }
-                        onClick={ () => this.verifyAnswer(`wrong-answer-${index}`) }
+                        className={ isCorrect
+                          ? { styleBtnCorrect }
+                          : { styleBtnIncorrect } }
+                        data-testid={ isCorrect
+                          ? 'correct-answer'
+                          : `wrong-answer-${index}` }
+                        onClick={ isCorrect
+                          ? () => this.verifyAnswer('correct-answer')
+                          : () => this.verifyAnswer(`wrong-answer-${index}`) }
                       >
-                        { incorretAnsewr }
-                      </button>))}
+                        {text}
+                      </button>
+                    </div>
+                  ))}
                 </div>
               </div>
             ) : (
