@@ -1,6 +1,9 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import '../App.css';
+
+const correctAnswer = 'correct-answer';
 
 class Trivia extends React.Component {
   state = {
@@ -37,7 +40,7 @@ class Trivia extends React.Component {
   }
 
   verifyAnswer = (alternative) => {
-    if (alternative === 'correct-answer') {
+    if (alternative === correctAnswer) {
       this.setState({
         styleBtnCorrect: 'btnCorrectOption',
         styleBtnIncorrect: 'btnIncorrectOption',
@@ -86,7 +89,7 @@ class Trivia extends React.Component {
         currentQuestion: currentQuestion + 1,
       });
     } else {
-      history.push('/'); // REDIRECIONAR PARA RANKING
+      history.push('/feedback'); // REDIRECIONAR PARA RANKING
     }
     this.randomAnswers();
     // console.log('currentQuestion', currentQuestion);
@@ -103,7 +106,6 @@ class Trivia extends React.Component {
     const { resultsQuestions } = this.props;
     const { results = [] } = resultsQuestions;
     const { firstQuestion } = this.state;
-
     return (
       <div>
         {
@@ -120,6 +122,19 @@ class Trivia extends React.Component {
                 <div data-testid="answer-options">
                   {firstQuestion.map(({ text, isCorrect }, index) => (
                     <div key={ index } data-testid="answer-options">
+                  <button
+                    className={ styleBtnCorrect }
+                    type="button"
+                    data-testid={ correctAnswer }
+                    name={ correctAnswer }
+                    onClick={ () => this.verifyAnswer(correctAnswer) }
+                  >
+                    {
+                      results[currentQuestion].correct_answer
+                    }
+                  </button>
+                  {results[currentQuestion].incorrect_answers
+                    .map((incorretAnsewr, index) => (
                       <button
                         type="button"
                         className={ isCorrect
@@ -149,10 +164,10 @@ class Trivia extends React.Component {
                     <button
                       type="button"
                       data-testid={ isCorrect
-                        ? 'correct-answer'
+                        ? correctAnswer
                         : `wrong-answer-${index}` }
                       onClick={ isCorrect
-                        ? () => this.verifyAnswer('correct-answer')
+                        ? () => this.verifyAnswer(correctAnswer)
                         : () => this.verifyAnswer(`wrong-answer-${index}`) }
                     >
                       {text}
@@ -178,6 +193,21 @@ class Trivia extends React.Component {
     );
   }
 }
+
+Trivia.propTypes = {
+  resultsQuestions: PropTypes.shape({
+    results: PropTypes.arrayOf(PropTypes.shape({
+      category: PropTypes.string.isRequired,
+      correct_answer: PropTypes.string.isRequired,
+      incorrect_answers: PropTypes.arrayOf(PropTypes.string).isRequired,
+      question: PropTypes.string.isRequired,
+    })).isRequired,
+  }).isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+};
+
 const mapStateToProps = (state) => ({
   resultsQuestions: state.gameReducer.resultsQuestions,
 });
