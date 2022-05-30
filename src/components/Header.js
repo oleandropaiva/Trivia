@@ -9,7 +9,6 @@ class Header extends Component {
     const hash = md5(gravatarEmail).toString();
     return (
       <div>
-        <h1>TESTE</h1>
         <img
           data-testid="header-profile-picture"
           alt="gravatar"

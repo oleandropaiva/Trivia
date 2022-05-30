@@ -5,17 +5,32 @@ import Header from '../components/Header';
 import Trivia from '../components/Trivia';
 import { fetchQuestion } from '../redux/actions';
 import { getTokenLocalStorage, resetLocalStorage } from '../services/localStorage';
+import Timer from '../components/Timer';
 
 class Game extends Component {
+  constructor() {
+    super();
+    this.state = {
+      seconds: 30000,
+      isDesabled: false,
+    };
+  }
+
   componentDidMount() {
-    const { fetchQuestionsProp, resultsQuestions } = this.props;
+    const { seconds } = this.state;
+    const { fetchQuestionsProp } = this.props;
     const getToken = getTokenLocalStorage();
     fetchQuestionsProp(getToken);
-    console.log('resultsQuestions', resultsQuestions);
+    setTimeout(this.myGreeting, seconds);
   }
+
+  myGreeting = () => {
+    this.setState({ isDesabled: true });
+  };
 
   render() {
     const { resultsQuestions, history } = this.props;
+    const { isDesabled } = this.state;
 
     const RESPONSE_CODE_NUMBER = 3;
     if (resultsQuestions.response_code === RESPONSE_CODE_NUMBER) {
@@ -26,7 +41,11 @@ class Game extends Component {
     return (
       <div>
         <Header />
-        <Trivia history={ history } />
+        <Timer />
+        <Trivia
+          history={ history }
+          isDesabled={ isDesabled }
+        />
       </div>
     );
   }

@@ -17,6 +17,7 @@ class Trivia extends React.Component {
   }
 
   componentDidUpdate() {
+    // console.log('componentDidUpdate');
     const { resultsQuestions } = this.props;
     const { currentQuestion, conditionDidUpdate } = this.state;
     const { results } = resultsQuestions;
@@ -79,8 +80,9 @@ class Trivia extends React.Component {
       styleBtnIncorrect,
       isWaiting,
     } = this.state;
-    const { resultsQuestions } = this.props;
+    const { resultsQuestions, isDesabled } = this.props;
     const { results = [] } = resultsQuestions;
+    // console.log('question', question);
 
     return (
       <div>
@@ -98,6 +100,7 @@ class Trivia extends React.Component {
                   <div key={ index } data-testid="answer-options">
                     <button
                       type="button"
+                      disabled={ isDesabled }
                       className={ isCorrect
                         ? `${styleBtnCorrect}`
                         : `${styleBtnIncorrect}` }
