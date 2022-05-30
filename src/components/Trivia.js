@@ -62,13 +62,11 @@ class Trivia extends React.Component {
         currentQuestion: currentQuestion + 1,
         isWaiting: true,
         conditionDidUpdate: true,
-      });
-      this.setState({
         styleBtnCorrect: '',
         styleBtnIncorrect: '',
       });
     } else {
-      history.push('/'); // REDIRECIONAR PARA RANKING.
+      history.push('/'); // REDIRECIONAR PARA RANKING
     }
   }
 
@@ -83,8 +81,6 @@ class Trivia extends React.Component {
     } = this.state;
     const { resultsQuestions } = this.props;
     const { results = [] } = resultsQuestions;
-    console.log('Render results', results);
-    console.log('Render question', question);
 
     return (
       <div>
@@ -121,7 +117,6 @@ class Trivia extends React.Component {
           <button
             data-testid="btn-next"
             type="button"
-            // key={ index }
             onClick={ this.nextQuestion }
           >
             Next

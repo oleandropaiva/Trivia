@@ -14,10 +14,6 @@ class Game extends Component {
     console.log('resultsQuestions', resultsQuestions);
   }
 
-  /* Retest = () => {
-    fetchQuestionsProp(getToken);
-  } */
-
   render() {
     const { resultsQuestions, history } = this.props;
 
