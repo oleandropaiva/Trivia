@@ -68,7 +68,7 @@ class Trivia extends React.Component {
         styleBtnIncorrect: '',
       });
     } else {
-      history.push('/'); // REDIRECIONAR PARA RANKING
+      history.push('/'); // REDIRECIONAR PARA RANKING.
     }
   }
 
