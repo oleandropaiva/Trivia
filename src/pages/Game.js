@@ -5,7 +5,6 @@ import Header from '../components/Header';
 import Trivia from '../components/Trivia';
 import { fetchQuestion } from '../redux/actions';
 import { getTokenLocalStorage, resetLocalStorage } from '../services/localStorage';
-import Timer from '../components/Timer';
 
 class Game extends Component {
   constructor() {
@@ -41,7 +40,6 @@ class Game extends Component {
     return (
       <div>
         <Header />
-        <Timer />
         <Trivia
           history={ history }
           isDesabled={ isDesabled }
