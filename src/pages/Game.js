@@ -20,10 +20,9 @@ class Game extends Component {
 
   render() {
     const { resultsQuestions, history } = this.props;
-    const { response_code } = resultsQuestions;
 
     const RESPONSE_CODE_NUMBER = 3;
-    if (response_code === RESPONSE_CODE_NUMBER) {
+    if (resultsQuestions.response_code === RESPONSE_CODE_NUMBER) {
       resetLocalStorage();
       history.push('/');
     }
