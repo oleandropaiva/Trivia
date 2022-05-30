@@ -1,4 +1,4 @@
-import { USER_EMAIL, USER_NAME, USER_SCORE } from '../actions/newFile';
+import { USER_EMAIL, USER_NAME, USER_SCORE, CURRENT_SCORE } from '../actions/newFile';
 
 const INITIAL_STATE = {
   name: '',
@@ -23,6 +23,11 @@ function userReducer(state = INITIAL_STATE, action) {
     return {
       ...state,
       score: action.payload,
+    };
+  case CURRENT_SCORE:
+    return {
+      ...state,
+      score: action.score,
     };
   default:
     return state;
