@@ -18,7 +18,7 @@ describe('Testes para atingir 90% de cobertura da tela de Jogo', () => {
     expect(playButton).not.toBeDisabled();
     
     userEvent.click(playButton);
-    await screen.findByText("TESTE");
+    await screen.findByText("TRIVIA");
     const player = screen.getByText(/Grupo13/i)
     expect(player).toBeInTheDocument();
     expect(history.location.pathname).toBe('/game')

@@ -11,7 +11,7 @@ class Ranking extends React.Component {
             type="button"
             data-testid="btn-go-home"
           >
-            Página de Ranking
+            Tela inicial
           </button>
         </Link>
       </div>
