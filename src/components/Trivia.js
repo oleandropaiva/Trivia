@@ -58,7 +58,6 @@ class Trivia extends React.Component {
       styleBtnCorrect: 'btnCorrectOption',
       styleBtnIncorrect: 'btnIncorrectOption',
       showNextBtn: true,
-      // difficulty: difficultyQuestion,
     });
 
     const totalScore = [];
