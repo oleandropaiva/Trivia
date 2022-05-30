@@ -1,19 +1,19 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import '../App.css';
+import propTypes from 'prop-types';
 
-const correctAnswer = 'correct-answer';
-
+const CORRECT_ANSWER = 'correct-answer';
+const WRONG_ANSWER = 'wrong-answer-';
 class Trivia extends React.Component {
   state = {
     currentQuestion: 0,
+    question: [],
     showNextBtn: false,
-    nextQuestion: [],
-    firstQuestion: [],
     styleBtnCorrect: '',
     styleBtnIncorrect: '',
     conditionDidUpdate: true,
+    isWaiting: true,
   }
 
   componentDidUpdate() {
@@ -30,53 +30,26 @@ class Trivia extends React.Component {
         text: results[currentQuestion].correct_answer,
         isCorrect: true,
       });
-      const RANDOM_CONST = 0.5;
-      const nextQuestionRandom = alternatives.sort(() => Math.random() - RANDOM_CONST);
-      this.setState({
-        firstQuestion: nextQuestionRandom,
-        conditionDidUpdate: false,
-      });
+      this.randomAnswers(alternatives);
     }
   }
 
-  verifyAnswer = (alternative) => {
-    if (alternative === correctAnswer) {
-      this.setState({
-        styleBtnCorrect: 'btnCorrectOption',
-        styleBtnIncorrect: 'btnIncorrectOption',
-      });
-      console.log('Certo');
-    } else {
-      this.setState({
-        styleBtnCorrect: 'btnCorrectOption',
-        styleBtnIncorrect: 'btnIncorrectOption',
-      });
-      console.log('Errado');
-    }
-    this.setState({ showNextBtn: true });
+  randomAnswers = (alternatives) => {
+    const RANDOM_CONST = 0.5;
+    const nextQuestionRandom = alternatives.sort(() => Math.random() - RANDOM_CONST);
+    this.setState({
+      question: nextQuestionRandom,
+      conditionDidUpdate: false,
+    });
   }
 
-  randomAnswers = () => {
-    const { resultsQuestions } = this.props;
-    const { currentQuestion } = this.state;
-    const { results } = resultsQuestions;
-    // const answers = [results[0].correct_answer, ...results[0].incorrect_answers];
-    if (currentQuestion < results.length - 1) {
-      const alternatives = results[currentQuestion + 1].incorrect_answers.map((text) => ({
-        text,
-        isCorrect: false,
-      }));
-      alternatives.push({
-        text: results[currentQuestion + 1].correct_answer,
-        isCorrect: true,
-      });
-      const RANDOM_CONST = 0.5;
-      const nextQuestionRandom = alternatives.sort(() => Math.random() - RANDOM_CONST);
-      this.setState({
-        nextQuestion: nextQuestionRandom,
-      });
-      return nextQuestionRandom;
-    }
+  verifyAnswer = () => {
+    this.setState({
+      isWaiting: false,
+      styleBtnCorrect: 'btnCorrectOption',
+      styleBtnIncorrect: 'btnIncorrectOption',
+      showNextBtn: true,
+    });
   }
 
   nextQuestion = () => {
@@ -87,103 +60,63 @@ class Trivia extends React.Component {
     if (currentQuestion < results.length - 1) {
       this.setState({
         currentQuestion: currentQuestion + 1,
+        isWaiting: true,
+        conditionDidUpdate: true,
+        styleBtnCorrect: '',
+        styleBtnIncorrect: '',
       });
     } else {
-      history.push('/feedback'); // REDIRECIONAR PARA RANKING
+      history.push('/'); // REDIRECIONAR PARA RANKING
     }
-    this.randomAnswers();
-    // console.log('currentQuestion', currentQuestion);
-    //
   }
 
   render() {
-    const { currentQuestion,
+    const {
+      currentQuestion,
+      question,
       showNextBtn,
-      nextQuestion,
       styleBtnCorrect,
       styleBtnIncorrect,
+      isWaiting,
     } = this.state;
     const { resultsQuestions } = this.props;
     const { results = [] } = resultsQuestions;
-    const { firstQuestion } = this.state;
+
     return (
       <div>
-        {
-          // eslint-disable-next-line no-nested-ternary
-          results.length <= 0
-            ? <p>Carregando...</p>
-            : (currentQuestion === 0 ? (
-              <div>
-                <h1 data-testid="question-category">
-                  {results[currentQuestion].category}
-                </h1>
-                <h2 data-testid="question-text">{ results[currentQuestion].question }</h2>
+        {results.length <= 0 && isWaiting === true
+          ? <p>Carregando...</p>
+          : (
+            <div>
+              <h1 data-testid="question-category">
+                {results[currentQuestion].category}
+              </h1>
+              <h2 data-testid="question-text">{ results[currentQuestion].question }</h2>
 
-                <div data-testid="answer-options">
-                  {firstQuestion.map(({ text, isCorrect }, index) => (
-                    <div key={ index } data-testid="answer-options">
-                  <button
-                    className={ styleBtnCorrect }
-                    type="button"
-                    data-testid={ correctAnswer }
-                    name={ correctAnswer }
-                    onClick={ () => this.verifyAnswer(correctAnswer) }
-                  >
-                    {
-                      results[currentQuestion].correct_answer
-                    }
-                  </button>
-                  {results[currentQuestion].incorrect_answers
-                    .map((incorretAnsewr, index) => (
-                      <button
-                        type="button"
-                        className={ isCorrect
-                          ? { styleBtnCorrect }
-                          : { styleBtnIncorrect } }
-                        data-testid={ isCorrect
-                          ? 'correct-answer'
-                          : `wrong-answer-${index}` }
-                        onClick={ isCorrect
-                          ? () => this.verifyAnswer('correct-answer')
-                          : () => this.verifyAnswer(`wrong-answer-${index}`) }
-                      >
-                        {text}
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <div>
-                <h1 data-testid="question-category">
-                  {results[currentQuestion].category}
-                </h1>
-                <h2 data-testid="question-text">{ results[currentQuestion].question }</h2>
-                {nextQuestion.map(({ text, isCorrect }, index) => (
+              <div data-testid="answer-options">
+                {question.map(({ text, isCorrect }, index) => (
                   <div key={ index } data-testid="answer-options">
                     <button
                       type="button"
+                      className={ isCorrect
+                        ? `${styleBtnCorrect}`
+                        : `${styleBtnIncorrect}` }
                       data-testid={ isCorrect
-                        ? correctAnswer
-                        : `wrong-answer-${index}` }
-                      onClick={ isCorrect
-                        ? () => this.verifyAnswer(correctAnswer)
-                        : () => this.verifyAnswer(`wrong-answer-${index}`) }
+                        ? CORRECT_ANSWER
+                        : `${WRONG_ANSWER}${index}` }
+                      onClick={ this.verifyAnswer }
                     >
                       {text}
                     </button>
                   </div>
                 ))}
               </div>
-            )
-            )
-        }
-        {/* END - // results.length // */}
+            </div>
+          )}
         {showNextBtn && (
           <button
             data-testid="btn-next"
             type="button"
-            // key={ index }
             onClick={ this.nextQuestion }
           >
             Next
@@ -195,18 +128,8 @@ class Trivia extends React.Component {
 }
 
 Trivia.propTypes = {
-  resultsQuestions: PropTypes.shape({
-    results: PropTypes.arrayOf(PropTypes.shape({
-      category: PropTypes.string.isRequired,
-      correct_answer: PropTypes.string.isRequired,
-      incorrect_answers: PropTypes.arrayOf(PropTypes.string).isRequired,
-      question: PropTypes.string.isRequired,
-    })).isRequired,
-  }).isRequired,
-  history: PropTypes.shape({
-    push: PropTypes.func.isRequired,
-  }).isRequired,
-};
+  resultsQuestions: propTypes.arrayOf(propTypes.object),
+}.isRequired;
 
 const mapStateToProps = (state) => ({
   resultsQuestions: state.gameReducer.resultsQuestions,

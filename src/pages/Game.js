@@ -14,16 +14,11 @@ class Game extends Component {
     console.log('resultsQuestions', resultsQuestions);
   }
 
-  /* Retest = () => {
-    fetchQuestionsProp(getToken);
-  } */
-
   render() {
     const { resultsQuestions, history } = this.props;
-    const { responseCode } = resultsQuestions; // Verificar pq ao mudar para camel case o teste falha req6 (anteriormente era response_code)
 
     const RESPONSE_CODE_NUMBER = 3;
-    if (responseCode === RESPONSE_CODE_NUMBER) { // Verificar pq ao mudar para camel case o teste falha req6 (anteriormente era response_code)
+    if (resultsQuestions.response_code === RESPONSE_CODE_NUMBER) {
       resetLocalStorage();
       history.push('/');
     }
