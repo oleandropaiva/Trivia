@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import '../App.css';
 import propTypes from 'prop-types';
+import { currentScore } from '../redux/actions';
 
 const CORRECT_ANSWER = 'correct-answer';
 const WRONG_ANSWER = 'wrong-answer-';
@@ -14,6 +15,7 @@ class Trivia extends React.Component {
     styleBtnIncorrect: '',
     conditionDidUpdate: true,
     isWaiting: true,
+    // difficulty: '',
   }
 
   componentDidUpdate() {
@@ -26,10 +28,14 @@ class Trivia extends React.Component {
       const alternatives = results[currentQuestion].incorrect_answers.map((text) => ({
         text,
         isCorrect: false,
+        option: CORRECT_ANSWER,
+        difficultyQuestion: results[currentQuestion].difficulty,
       }));
       alternatives.push({
         text: results[currentQuestion].correct_answer,
         isCorrect: true,
+        option: WRONG_ANSWER,
+        difficultyQuestion: results[currentQuestion].difficulty,
       });
       this.randomAnswers(alternatives);
     }
@@ -44,13 +50,37 @@ class Trivia extends React.Component {
     });
   }
 
-  verifyAnswer = () => {
+  verifyAnswer = (option, difficultyQuestion) => {
+    console.log('option', option);
+    const { timer, currentScoreProp } = this.props;
     this.setState({
       isWaiting: false,
       styleBtnCorrect: 'btnCorrectOption',
       styleBtnIncorrect: 'btnIncorrectOption',
       showNextBtn: true,
+      // difficulty: difficultyQuestion,
     });
+
+    const totalScore = [];
+    const POINT = 10;
+    const ONE_POINT = 1;
+    const TWO_POINT = 2;
+    const THREE_POINT = 3;
+    if (difficultyQuestion === 'easy') {
+      totalScore.push(ONE_POINT);
+    } else if (difficultyQuestion === 'medium') {
+      totalScore.push(TWO_POINT);
+    } else if (difficultyQuestion === 'hard') {
+      totalScore.push(THREE_POINT);
+    }
+    const score = (timer * totalScore[0]) + POINT;
+    console.log('score', score);
+
+    if (option !== 'correct-answer') {
+      currentScoreProp(score);
+    } else {
+      currentScoreProp(0);
+    }
   }
 
   nextQuestion = () => {
@@ -82,7 +112,9 @@ class Trivia extends React.Component {
     } = this.state;
     const { resultsQuestions, isDesabled } = this.props;
     const { results = [] } = resultsQuestions;
-    // console.log('question', question);
+    // console.log('results', results);
+    console.log('question', question);
+    // console.log('props', this.props);
 
     return (
       <div>
@@ -96,20 +128,22 @@ class Trivia extends React.Component {
               <h2 data-testid="question-text">{ results[currentQuestion].question }</h2>
 
               <div data-testid="answer-options">
-                {question.map(({ text, isCorrect }, index) => (
+                {question.map((quiz, index) => (
                   <div key={ index } data-testid="answer-options">
                     <button
                       type="button"
                       disabled={ isDesabled }
-                      className={ isCorrect
+                      className={ quiz.isCorrect
                         ? `${styleBtnCorrect}`
                         : `${styleBtnIncorrect}` }
-                      data-testid={ isCorrect
+                      data-testid={ quiz.isCorrect
                         ? CORRECT_ANSWER
                         : `${WRONG_ANSWER}${index}` }
-                      onClick={ this.verifyAnswer }
+                      onClick={ () => this.verifyAnswer(
+                        quiz.option, quiz.difficultyQuestion,
+                      ) }
                     >
-                      {text}
+                      {quiz.text}
                     </button>
                   </div>
                 ))}
@@ -137,4 +171,9 @@ Trivia.propTypes = {
 const mapStateToProps = (state) => ({
   resultsQuestions: state.gameReducer.resultsQuestions,
 });
-export default connect(mapStateToProps)(Trivia);
+
+const mapDispatchToProps = (dispatch) => ({
+  currentScoreProp: (time) => dispatch(currentScore(time)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Trivia);

@@ -1,4 +1,11 @@
-import { USER_EMAIL, USER_NAME, USER_SCORE, QUESTION, CATEGORIES } from './newFile';
+import {
+  USER_EMAIL,
+  USER_NAME,
+  USER_SCORE,
+  QUESTION,
+  CATEGORIES,
+  CURRENT_SCORE,
+} from './newFile';
 
 export const sendEmailForm = (email) => ({
   type: USER_EMAIL,
@@ -25,11 +32,10 @@ export const getQuestions = (question) => ({
   payload: question,
 });
 
-/* export async function getApiToken() {
-  const recebeAPI = await fetch('https://opentdb.com/api_token.php?command=request');
-  const categories = await recebeAPI.json();
-  return (categories);
-} */
+export const currentScore = (score) => ({
+  type: CURRENT_SCORE,
+  score,
+});
 
 export function getApiToken() {
   return async (dispatch) => {
