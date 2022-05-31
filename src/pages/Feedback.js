@@ -6,11 +6,16 @@ import md5 from 'crypto-js/md5';
 
 class Feedback extends Component {
   render() {
-    const { gravatarEmail, name, score } = this.props;
+    const { gravatarEmail, name, score, assertions } = this.props;
     const hash = md5(gravatarEmail).toString();
+    const NUMBER = 3;
     return (
       <div>
         <header>
+          {
+            assertions < NUMBER && <p data-testid="feedback-text">Could be better...</p>
+          }
+          { assertions >= NUMBER && <p data-testid="feedback-text">Well Done!</p> }
           <img
             data-testid="header-profile-picture"
             alt="gravatar"
@@ -53,12 +58,14 @@ const mapStateToProps = (state) => ({
   gravatarEmail: state.player.gravatarEmail,
   name: state.player.name,
   score: state.player.score,
+  assertions: state.player.assertions,
 });
 
 Feedback.propTypes = {
   gravatarEmail: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   score: PropTypes.number.isRequired,
+  assertions: PropTypes.number.isRequired,
 };
 
 export default connect(mapStateToProps)(Feedback);

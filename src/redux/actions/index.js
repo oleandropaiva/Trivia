@@ -5,6 +5,7 @@ import {
   QUESTION,
   CATEGORIES,
   CURRENT_SCORE,
+  RIGHT_GUESSES,
 } from './newFile';
 
 export const sendEmailForm = (email) => ({
@@ -35,6 +36,11 @@ export const getQuestions = (question) => ({
 export const currentScore = (score) => ({
   type: CURRENT_SCORE,
   score,
+});
+
+export const rightGuesses = (hit) => ({
+  type: RIGHT_GUESSES,
+  hit,
 });
 
 export function getApiToken() {

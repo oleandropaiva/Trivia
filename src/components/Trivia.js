@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import '../App.css';
 import propTypes from 'prop-types';
-import { currentScore } from '../redux/actions';
+import { currentScore, rightGuesses } from '../redux/actions';
 
 const CORRECT_ANSWER = 'correct-answer';
 const WRONG_ANSWER = 'wrong-answer-';
@@ -58,7 +58,7 @@ class Trivia extends React.Component {
   verifyAnswer = (option, difficultyQuestion) => {
     console.log('option', option);
     console.log('difficultyQuestion', difficultyQuestion);
-    const { timer, currentScoreProp } = this.props;
+    const { timer, currentScoreProp, rightGuessesProp } = this.props;
     this.setState({
       isWaiting: false,
       styleBtnCorrect: 'btnCorrectOption',
@@ -87,6 +87,7 @@ class Trivia extends React.Component {
       console.log('score', score);
 
       currentScoreProp(score);
+      rightGuessesProp(1);
     } return false;
   }
 
@@ -180,6 +181,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   currentScoreProp: (time) => dispatch(currentScore(time)),
+  rightGuessesProp: (hit) => dispatch(rightGuesses(hit)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Trivia);
