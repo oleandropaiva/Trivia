@@ -87,7 +87,7 @@ describe('Testes para atingir 90% de cobertura da tela de Login', () => {
     
     userEvent.click(playButton);
 
-    await screen.findByText("TRIVIA");
+    await screen.findByText('TRIVIA');
 
     expect(history.location.pathname).toBe('/game')
   });
