@@ -4,3 +4,4 @@ export const USER_SCORE = 'USER_SCORE';
 export const QUESTION = 'QUESTION';
 export const CATEGORIES = 'CATEGORIES';
 export const CURRENT_SCORE = 'CURRENT_SCORE';
+export const RIGHT_GUESSES = 'RIGHT_GUESSES';

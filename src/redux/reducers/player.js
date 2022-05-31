@@ -1,8 +1,14 @@
-import { USER_EMAIL, USER_NAME, USER_SCORE, CURRENT_SCORE } from '../actions/newFile';
+import {
+  USER_EMAIL,
+  USER_NAME,
+  USER_SCORE,
+  CURRENT_SCORE,
+  RIGHT_GUESSES,
+} from '../actions/newFile';
 
 const INITIAL_STATE = {
   name: '',
-  assertions: '',
+  assertions: 0,
   score: 0,
   gravatarEmail: '',
 };
@@ -28,6 +34,11 @@ function userReducer(state = INITIAL_STATE, action) {
     return {
       ...state,
       score: state.score + action.score,
+    };
+  case RIGHT_GUESSES:
+    return {
+      ...state,
+      assertions: state.assertions + action.hit,
     };
   default:
     return state;
