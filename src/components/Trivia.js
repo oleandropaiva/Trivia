@@ -15,35 +15,40 @@ class Trivia extends React.Component {
     styleBtnIncorrect: '',
     conditionDidUpdate: true,
     isWaiting: true,
-    // difficulty: '',
   }
 
-  componentDidUpdate() {
-    // console.log('componentDidUpdate');
-    const { resultsQuestions } = this.props;
+  componentDidUpdate(prevProps) {
+    console.log('componentDidUpdate');
+    const { resultsQuestions } = prevProps;
     const { currentQuestion, conditionDidUpdate } = this.state;
-    const { results } = resultsQuestions;
+    const { results } = prevProps.resultsQuestions;
 
-    if (currentQuestion < results.length - 1 && conditionDidUpdate === true) {
-      const alternatives = results[currentQuestion].incorrect_answers.map((text) => ({
-        text,
-        isCorrect: false,
-        option: CORRECT_ANSWER,
-        difficultyQuestion: results[currentQuestion].difficulty,
-      }));
-      alternatives.push({
-        text: results[currentQuestion].correct_answer,
-        isCorrect: true,
-        option: WRONG_ANSWER,
-        difficultyQuestion: results[currentQuestion].difficulty,
-      });
-      this.randomAnswers(alternatives);
+    if (typeof resultsQuestions.results !== 'undefined') {
+      if (currentQuestion < results.length - 1 && conditionDidUpdate === true) {
+        const alternatives = results[currentQuestion].incorrect_answers.map((text) => ({
+          text,
+          isCorrect: false,
+          option: CORRECT_ANSWER,
+          difficultyQuestion: results[currentQuestion].difficulty,
+        }));
+        alternatives.push({
+          text: results[currentQuestion].correct_answer,
+          isCorrect: true,
+          option: WRONG_ANSWER,
+          difficultyQuestion: results[currentQuestion].difficulty,
+        });
+        this.randomAnswers(alternatives);
+        return true;
+      }
+      return false;
     }
+    return false;
   }
 
   randomAnswers = (alternatives) => {
     const RANDOM_CONST = 0.5;
     const nextQuestionRandom = alternatives.sort(() => Math.random() - RANDOM_CONST);
+    console.log('nextQuestionRandom', nextQuestionRandom);
     this.setState({
       question: nextQuestionRandom,
       conditionDidUpdate: false,
@@ -52,6 +57,7 @@ class Trivia extends React.Component {
 
   verifyAnswer = (option, difficultyQuestion) => {
     console.log('option', option);
+    console.log('difficultyQuestion', difficultyQuestion);
     const { timer, currentScoreProp } = this.props;
     this.setState({
       isWaiting: false,
@@ -60,26 +66,28 @@ class Trivia extends React.Component {
       showNextBtn: true,
     });
 
-    const totalScore = [];
-    const POINT = 10;
-    const ONE_POINT = 1;
-    const TWO_POINT = 2;
-    const THREE_POINT = 3;
-    if (difficultyQuestion === 'easy') {
-      totalScore.push(ONE_POINT);
-    } else if (difficultyQuestion === 'medium') {
-      totalScore.push(TWO_POINT);
-    } else if (difficultyQuestion === 'hard') {
-      totalScore.push(THREE_POINT);
-    }
-    const score = (timer * totalScore[0]) + POINT;
-    console.log('score', score);
+    if (option !== CORRECT_ANSWER) {
+      const pointDifficulty = [];
+      const POINT = 10;
+      const ONE_POINT = 1;
+      const TWO_POINTS = 2;
+      const THREE_POINTS = 3;
 
-    if (option !== 'correct-answer') {
+      // difficultyQuestion === 'easy' && pointDifficulty.push(ONE_POINT);
+      // difficultyQuestion === 'medium' && pointDifficulty.push(TWO_POINTS);
+      // difficultyQuestion === 'hard' && pointDifficulty.push(THREE_POINTS);
+      if (difficultyQuestion === 'easy') {
+        pointDifficulty.push(ONE_POINT);
+      } else if (difficultyQuestion === 'medium') {
+        pointDifficulty.push(TWO_POINTS);
+      } else if (difficultyQuestion === 'hard') {
+        pointDifficulty.push(THREE_POINTS);
+      }
+      const score = POINT + (timer * pointDifficulty[0]);
+      console.log('score', score);
+
       currentScoreProp(score);
-    } else {
-      currentScoreProp(0);
-    }
+    } return false;
   }
 
   nextQuestion = () => {
@@ -111,13 +119,12 @@ class Trivia extends React.Component {
     } = this.state;
     const { resultsQuestions, isDesabled } = this.props;
     const { results = [] } = resultsQuestions;
-    // console.log('results', results);
+    console.log('results', results);
     console.log('question', question);
-    // console.log('props', this.props);
 
     return (
       <div>
-        {results.length <= 0 && isWaiting === true
+        {question.length <= 0 && isWaiting === true
           ? <p>Carregando...</p>
           : (
             <div>
