@@ -28,10 +28,8 @@ class Feedback extends Component {
     return (
       <div>
         <header>
-          {
-            assertions < NUMBER && <p data-testid="feedback-text">Could be better...</p>
-          }
-          { assertions >= NUMBER && <p data-testid="feedback-text">Well Done!</p> }
+          {assertions < NUMBER && <p data-testid="feedback-text">Could be better...</p>}
+          {assertions >= NUMBER && <p data-testid="feedback-text">Well Done!</p>}
           <img
             data-testid="header-profile-picture"
             alt="gravatar"
