@@ -27,15 +27,22 @@ class Login extends React.Component {
 
   handleSubmit = async (e) => {
     e.preventDefault();
-    const { getApiTokenProp, getTokenProp } = this.props;
+    const {
+      getApiTokenProp,
+      getTokenProp,
+      sendEmailFormProp,
+      sendUserFormProp,
+      history,
+    } = this.props;
+    const { email, user } = this.state;
+
     await getApiTokenProp(); // Segunda chamada => retorna valor
 
     addTokenLocalStorage(getTokenProp.token);
 
-    const { sendEmailFormProp, sendUserFormProp, history } = this.props;
-    const { email, user } = this.state;
     sendEmailFormProp(email);
     sendUserFormProp(user);
+
     history.push('/game');
   }
 
