@@ -5,6 +5,22 @@ import PropTypes from 'prop-types';
 import md5 from 'crypto-js/md5';
 
 class Feedback extends Component {
+  componentWillUnmount() {
+    this.saveRankingLocalStorage();
+  }
+
+  saveRankingLocalStorage = () => {
+    const { name, score } = this.props;
+
+    const rankingInfos = { name, score };
+    const getRankind = localStorage.getItem('ranking');
+    if (getRankind !== null) {
+      const ranking = JSON.parse(getRankind);
+      ranking.push(rankingInfos);
+      localStorage.setItem('ranking', JSON.stringify(ranking));
+    }
+  }
+
   render() {
     const { gravatarEmail, name, score, assertions } = this.props;
     const hash = md5(gravatarEmail).toString();

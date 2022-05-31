@@ -1,8 +1,10 @@
 const TOKEN = 'token';
+const RANKING = 'ranking';
 
 if (!localStorage.getItem(TOKEN)) { // Verificando se existe a key Token -- EM STRING
 // if (!JSON.parse(localStorage.getItem(TOKEN))) { // Verificando se existe a key Token - EM JS
   localStorage.setItem(TOKEN, JSON.stringify([])); // Cria a key Token com o array vazio
+  localStorage.setItem(RANKING, JSON.stringify([])); // Cria a key Token com o array vazio
 }
 
 const saveTokenUser = (token) => localStorage
