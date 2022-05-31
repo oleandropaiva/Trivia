@@ -33,6 +33,8 @@ class Feedback extends Component {
           </p>
         </header>
         <h1 data-testid="feedback-text">Feedback</h1>
+        <h2 data-testid="feedback-total-score">{ score }</h2>
+        <h2 data-testid="feedback-total-question">{ assertions }</h2>
         <Link to="/">
           <button
             type="button"
