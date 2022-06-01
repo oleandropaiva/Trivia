@@ -2,29 +2,32 @@ import React from 'react';
 import { connect } from 'react-redux';
 import '../App.css';
 import propTypes from 'prop-types';
-import { currentScore, rightGuesses } from '../redux/actions';
+import { currentScore, rightGuesses, setTimer } from '../redux/actions';
+import { CORRECT_ANSWER, WRONG_ANSWER, TIME_OUT_SECONDS } from '../data/magicNumbers';
 
-const CORRECT_ANSWER = 'correct-answer';
-const WRONG_ANSWER = 'wrong-answer-';
 class Trivia extends React.Component {
-  state = {
-    currentQuestion: 0,
-    question: [],
-    showNextBtn: false,
-    styleBtnCorrect: '',
-    styleBtnIncorrect: '',
-    conditionDidUpdate: true,
-    isWaiting: true,
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentQuestion: 0,
+      question: [],
+      showNextBtn: false,
+      styleBtnCorrect: '',
+      styleBtnIncorrect: '',
+      conditionDidUpdate: true,
+      isWaiting: true,
+    };
   }
 
+  // Chamado após a segunda renderização,
   componentDidUpdate(prevProps) {
-    console.log('componentDidUpdate');
     const { resultsQuestions } = prevProps;
     const { currentQuestion, conditionDidUpdate } = this.state;
     const { results } = prevProps.resultsQuestions;
+    console.log('componentDidUpdate', prevProps.timer);
 
     if (typeof resultsQuestions.results !== 'undefined') {
-      if (currentQuestion < results.length - 1 && conditionDidUpdate === true) {
+      if (currentQuestion < results.length && conditionDidUpdate === true) {
         const alternatives = results[currentQuestion].incorrect_answers.map((text) => ({
           text,
           isCorrect: false,
@@ -58,7 +61,7 @@ class Trivia extends React.Component {
   verifyAnswer = (option, difficultyQuestion) => {
     console.log('option', option);
     console.log('difficultyQuestion', difficultyQuestion);
-    const { timer, currentScoreProp, rightGuessesProp } = this.props;
+    const { currentScoreProp, rightGuessesProp, timerProp, setTimerProp } = this.props;
     this.setState({
       isWaiting: false,
       styleBtnCorrect: 'btnCorrectOption',
@@ -83,11 +86,12 @@ class Trivia extends React.Component {
       } else if (difficultyQuestion === 'hard') {
         pointDifficulty.push(THREE_POINTS);
       }
-      const score = POINT + (timer * pointDifficulty[0]);
+      const score = POINT + (timerProp * pointDifficulty[0]);
       console.log('score', score);
 
       currentScoreProp(score);
       rightGuessesProp(1);
+      setTimerProp(TIME_OUT_SECONDS);
     } return false;
   }
 
@@ -177,11 +181,13 @@ Trivia.propTypes = {
 
 const mapStateToProps = (state) => ({
   resultsQuestions: state.gameReducer.resultsQuestions,
+  timerProp: state.settingsReducer.timer,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   currentScoreProp: (time) => dispatch(currentScore(time)),
   rightGuessesProp: (hit) => dispatch(rightGuesses(hit)),
+  setTimerProp: (time) => dispatch(setTimer(time)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Trivia);

@@ -4,7 +4,8 @@ import {
   USER_SCORE,
   CURRENT_SCORE,
   RIGHT_GUESSES,
-} from '../actions/newFile';
+  RESET_SCORE,
+} from '../../data/magicNumbers';
 
 const INITIAL_STATE = {
   name: '',
@@ -39,6 +40,11 @@ function userReducer(state = INITIAL_STATE, action) {
     return {
       ...state,
       assertions: state.assertions + action.hit,
+    };
+  case RESET_SCORE:
+    return {
+      ...state,
+      score: action.scoreInit,
     };
   default:
     return state;
