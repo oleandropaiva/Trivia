@@ -19,7 +19,7 @@ class Login extends React.Component {
   componentDidMount() {
     const { getApiTokenProp, resetScoreProp } = this.props;
     getApiTokenProp(); // Primeira chamada => undefined
-    resetScoreProp(INIT_SCORE); // Primeira chamada => undefined
+    resetScoreProp(INIT_SCORE); // Primeira chamada => undefined //
   }
 
   handleChange = ({ target }) => {
