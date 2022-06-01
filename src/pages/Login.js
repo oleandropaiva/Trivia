@@ -2,8 +2,10 @@ import React from 'react';
 import propTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { sendEmailForm, sendUserForm, getApiToken } from '../redux/actions/index';
+import { sendEmailForm, sendUserForm, resetScore } from '../redux/actions/index';
+import { getApiToken } from '../redux/actions/actionThunk';
 import { addTokenLocalStorage } from '../services/localStorage';
+import { INIT_SCORE } from '../data/magicNumbers';
 
 class Login extends React.Component {
   constructor(props) {
@@ -15,8 +17,9 @@ class Login extends React.Component {
   }
 
   componentDidMount() {
-    const { getApiTokenProp } = this.props;
+    const { getApiTokenProp, resetScoreProp } = this.props;
     getApiTokenProp(); // Primeira chamada => undefined
+    resetScoreProp(INIT_SCORE); // Primeira chamada => undefined
   }
 
   handleChange = ({ target }) => {
@@ -93,6 +96,7 @@ class Login extends React.Component {
 
 Login.propTypes = {
   history: propTypes.string,
+  resetScoreProp: propTypes.number,
 }.isRequired;
 
 const mapStateToProps = (state) => ({
@@ -103,6 +107,7 @@ const mapDispatchToProps = (dispatch) => ({
   sendEmailFormProp: (emailForm) => dispatch(sendEmailForm(emailForm)),
   sendUserFormProp: (userForm) => dispatch(sendUserForm(userForm)),
   getApiTokenProp: () => dispatch(getApiToken()),
+  resetScoreProp: (initScore) => dispatch(resetScore(initScore)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

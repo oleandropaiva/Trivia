@@ -3,16 +3,17 @@ import { connect } from 'react-redux';
 import propTypes from 'prop-types';
 import Header from '../components/Header';
 import Trivia from '../components/Trivia';
-import { fetchQuestion } from '../redux/actions';
+import { fetchQuestion } from '../redux/actions/actionThunk';
+import { timeOutAction, setTimer } from '../redux/actions';
 import { getTokenLocalStorage, resetLocalStorage } from '../services/localStorage';
+import { TIME_OUT_SECONDS } from '../data/magicNumbers';
 
 class Game extends Component {
   constructor() {
     super();
     this.state = {
-      seconds: 30000,
+      seconds: 0,
       oneSecond: 1000,
-      timer: 30,
       isDesabled: false,
       timeOut: '',
       interval: '',
@@ -21,36 +22,49 @@ class Game extends Component {
 
   componentDidMount() {
     const { seconds, oneSecond } = this.state;
-    const { fetchQuestionsProp } = this.props;
+    const { fetchQuestionsProp, timer, setTimerProp } = this.props;
+    setTimerProp(TIME_OUT_SECONDS);
+    console.log('timerProp', timer);
     const getToken = getTokenLocalStorage();
     fetchQuestionsProp(getToken);
-    const timeOut = setTimeout(this.timeOut, seconds);
-    const interval = setInterval(this.timeCurrent, oneSecond);
+    const settTimeOut = setTimeout(this.timeOut, seconds);
+    const settInterval = setInterval(this.timeCurrent, oneSecond);
     this.setState({
-      timeOut,
-      interval,
+      seconds: timer * oneSecond,
+      timeOut: settTimeOut,
+      interval: settInterval,
     });
   }
 
+  componentWillUnmount() {
+    const { interval } = this.state;
+    clearInterval(interval);
+  }
+
   timeOut = () => {
-    const { timer, timeOut } = this.state;
-    this.setState({ isDesabled: true });
-    if (timer === 0) {
+    const { timeOut } = this.state;
+    const { timerProp } = this.props;
+    console.log('timer', timerProp);
+    if (timerProp === 0) {
       clearTimeout(timeOut);
     }
   };
 
   timeCurrent = () => {
-    const { timer, interval } = this.state;
-    this.setState({ timer: timer - 1 });
-    if (timer === 0) {
+    const { interval } = this.state;
+    const { timeOutProp } = this.props;
+    const { timerProp } = this.props;
+    if (timerProp > 0) {
+      timeOutProp(1);
+    } else {
       clearInterval(interval);
+      this.setState({ isDesabled: true });
     }
   };
 
   render() {
     const { resultsQuestions, history } = this.props;
-    const { isDesabled, timer } = this.state;
+    const { isDesabled } = this.state;
 
     const RESPONSE_CODE_NUMBER = 3;
     if (resultsQuestions.response_code === RESPONSE_CODE_NUMBER) {
@@ -60,11 +74,10 @@ class Game extends Component {
 
     return (
       <div>
-        <Header />
+        <Header history={ history } />
         <Trivia
           history={ history }
           isDesabled={ isDesabled }
-          timer={ timer }
         />
       </div>
     );
@@ -77,10 +90,13 @@ Game.propTypes = {
 
 const mapDispatchToProps = (dispatch) => ({
   fetchQuestionsProp: (token) => dispatch(fetchQuestion(token)),
+  timeOutProp: (secDegree) => dispatch(timeOutAction(secDegree)),
+  setTimerProp: (time) => dispatch(setTimer(time)),
 });
 
 const mapStateToProps = (state) => ({
   resultsQuestions: state.gameReducer.resultsQuestions,
+  timerProp: state.settingsReducer.timer,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);

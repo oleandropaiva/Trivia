@@ -1,4 +1,4 @@
-import { QUESTION, CATEGORIES } from '../actions/newFile';
+import { QUESTION, CATEGORIES } from '../../data/magicNumbers';
 
 const INITIAL_STATE = {
   resultsQuestions: [],

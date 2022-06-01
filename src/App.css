@@ -69,3 +69,10 @@ body {
 .btnIncorrectOption {
   border: 3px solid red;
 }
+
+#timer {
+  color: #0e0e0e;
+  text-align: center;
+  font-size: 22px;
+  font-family: Arial, sans-serif;
+}

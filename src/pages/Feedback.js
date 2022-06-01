@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import md5 from 'crypto-js/md5';
 
 class Feedback extends Component {
-  componentWillUnmount() {
+  componentDidMount() {
     this.saveRankingLocalStorage();
   }
 
@@ -18,7 +18,14 @@ class Feedback extends Component {
       const ranking = JSON.parse(getRankind);
       ranking.push(rankingInfos);
       localStorage.setItem('ranking', JSON.stringify(ranking));
+    } else {
+      localStorage.setItem('ranking', JSON.stringify([rankingInfos]));
     }
+  }
+
+  redirectToRanking = () => {
+    const { history } = this.props;
+    history.push('/ranking');
   }
 
   render() {
@@ -28,10 +35,8 @@ class Feedback extends Component {
     return (
       <div>
         <header>
-          {
-            assertions < NUMBER && <p data-testid="feedback-text">Could be better...</p>
-          }
-          { assertions >= NUMBER && <p data-testid="feedback-text">Well Done!</p> }
+          {assertions < NUMBER && <p data-testid="feedback-text">Could be better...</p>}
+          {assertions >= NUMBER && <p data-testid="feedback-text">Well Done!</p>}
           <img
             data-testid="header-profile-picture"
             alt="gravatar"
@@ -59,14 +64,15 @@ class Feedback extends Component {
             Play Again
           </button>
         </Link>
-        <Link to="/ranking">
-          <button
-            type="button"
-            data-testid="btn-ranking"
-          >
-            Ranking
-          </button>
-        </Link>
+
+        <button
+          type="button"
+          data-testid="btn-ranking"
+          onClick={ this.redirectToRanking }
+        >
+          Ranking
+        </button>
+
       </div>
     );
   }
@@ -80,10 +86,11 @@ const mapStateToProps = (state) => ({
 });
 
 Feedback.propTypes = {
-  gravatarEmail: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  score: PropTypes.number.isRequired,
-  assertions: PropTypes.number.isRequired,
-};
+  gravatarEmail: PropTypes.string,
+  name: PropTypes.string,
+  score: PropTypes.number,
+  assertions: PropTypes.number,
+  history: PropTypes.string,
+}.isRequired;
 
 export default connect(mapStateToProps)(Feedback);
