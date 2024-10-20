@@ -1,4 +1,4 @@
-### Nesse projeto, você será capaz de:
+### Habilidades:
 
 - Criar um store Redux em aplicações React
 
